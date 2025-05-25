@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Alertas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-color: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #444;
+            text-align: left;
+        }
+
+        th {
+            background-color: #333;
+        }
+
+        tr.pendiente {
+            background-color: rgba(255, 80, 80, 0.2);
+        }
+
+        tr.en_proceso {
+            background-color: rgba(255, 255, 0, 0.2);
+        }
+
+        tr.solucionado {
+            background-color: rgba(100, 255, 100, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>Gestión de Alertas</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Serie</th>
+                <th>Ubicación</th>
+                <th>Tipo</th>
+                <th>Problema</th>
+                <th>Estado</th>
+                <th>Hora Atención</th>
+                <th>Comentario</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for alerta in alertas %}
+            <tr class="{% if alerta.estado == 'Solucionado' %}solucionado{% elif alerta.estado == 'En proceso' %}en_proceso{% else %}pendiente{% endif %}">
+                <td>{{ alerta.fecha }}</td>
+                <td>{{ alerta.usuario }}</td>
+                <td>{{ alerta.serie_computador }}</td>
+                <td>{{ alerta.ubicacion }}</td>
+                <td>{{ alerta.tipo_ubicacion }}</td>
+                <td>{{ alerta.problema }}</td>
+                <td>{{ alerta.estado if alerta.estado else 'Pendiente' }}</td>
+                <td>{{ alerta.hora_atencion if alerta.hora_atencion else '' }}</td>
+                <td>{{ alerta.comentario_admin if alerta.comentario_admin else '' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -170,6 +170,25 @@ def mantenimientos_mensuales():
 
     return render_template('mantenimientos_mensuales.html', registros_por_mes=registros_por_mes)
 
+@main.route('/reportes')
+def reportes():
+    if 'usuario' not in session:
+        return redirect(url_for('main.login'))
+
+    usuario_actual = session['usuario']
+    alertas_usuario = list(db.alertas.find({"usuario": usuario_actual}).sort("fecha", -1))
+
+    return render_template('reportes.html', alertas=alertas_usuario)
+
+@main.route('/gestionar-alertas', methods=['GET'])
+def gestionar_alertas():
+    if 'usuario' not in session or session.get('rol') != 'admin':
+        return redirect(url_for('main.login'))
+
+    alertas = list(db.alertas.find().sort("fecha", -1))
+    return render_template('gestionar_alertas.html', alertas=alertas)
+
+
 
 @main.route('/logout')
 def logout():

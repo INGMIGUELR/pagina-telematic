@@ -118,7 +118,7 @@
     <div class="card">
         <h3>Mantenimiento</h3>
         <p>Registrar y gestionar el mantenimiento de equipos.</p>
-        <a href="/mantenimiento">Entrar</a>
+        <a href="{{ url_for('main.mantenimiento') }}">Entrar</a>
     </div>
 
     <div class="card">
@@ -126,18 +126,25 @@
         <p>Administrar usuarios autorizados del sistema.</p>
         <a href="#">Entrar</a>
     </div>
+
+    <div class="card">
+        <h3>Gestionar Alertas</h3>
+        <p>Visualizar y actualizar el estado de las alertas de los usuarios.</p>
+        <a href="{{ url_for('main.gestionar_alertas') }}">Entrar</a>
+    </div>
     {% endif %}
 
     <div class="card">
         <h3>Reportes</h3>
         <p>Ver reportes e historial de soporte técnico.</p>
-        <a href="#">Entrar</a>
+        <a href="{{ url_for('main.reportes') }}">Entrar</a>
     </div>
 
     <div class="card">
         <h3>Alertas</h3>
         <p>Ver próximos mantenimientos y notificaciones de fallos.</p>
-        <a href="/alertas">Entrar</a>
+        <a href="{{ url_for('main.alertas') }}">Entrar</a>
     </div>
 
 </div>
+
