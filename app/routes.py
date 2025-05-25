@@ -1,18 +1,15 @@
 import glob
 import os
 import io
-from flask import Blueprint, render_template, request, redirect, url_for, make_response
-from flask import session
-from werkzeug.security import check_password_hash
+from flask import Blueprint, render_template, request, redirect, url_for, make_response, session
+from werkzeug.security import check_password_hash, generate_password_hash
 from app.db import coleccion_registros
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from openpyxl import load_workbook
 from openpyxl.cell import MergedCell
 from datetime import datetime
-
 from pymongo import MongoClient
-from werkzeug.security import generate_password_hash
 
 main = Blueprint('main', __name__)
 
@@ -45,7 +42,6 @@ def login():
 
     return render_template('login.html')
 
-
 @main.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -53,17 +49,14 @@ def register():
         email = request.form['email']
         password = request.form['password']
 
-        # Validar si ya existe el usuario
         if coleccion_usuarios.find_one({"usuario": usuario}):
             mensaje = "❌ El nombre de usuario ya está registrado."
             return render_template('register.html', mensaje=mensaje)
 
-        # Validar si ya existe el correo
         if coleccion_usuarios.find_one({"email": email}):
             mensaje = "❌ El correo ya está registrado."
             return render_template('register.html', mensaje=mensaje)
 
-        # Encriptar contraseña
         password_hash = generate_password_hash(password)
 
         nuevo_usuario = {
@@ -91,7 +84,6 @@ def dashboard():
         return render_template('dashboard.html', usuario=session['usuario'])
     return redirect(url_for('main.login'))
 
-
 @main.route('/alertas')
 def alertas():
     return render_template('alertas.html')
@@ -113,6 +105,9 @@ def plan_general():
 
 @main.route('/mantenimiento', methods=['GET', 'POST'])
 def mantenimiento():
+    if 'usuario' not in session:
+        return redirect(url_for('main.login'))  # Bloquea si no ha iniciado sesión
+
     if request.method == 'POST':
         equipo = request.form['equipo']
         fecha = request.form['fecha']
@@ -128,10 +123,11 @@ def mantenimiento():
         actualizar_hoja_vida(equipo, fecha, descripcion)
         hojas_actualizadas.add(f"{equipo}.xlsx")
 
-        return redirect(url_for('main.mantenimiento'))
+        return redirect(url_for('main.mantenimiento', mensaje='ok'))
 
+    mensaje = request.args.get('mensaje')
     registros = list(coleccion_registros.find().sort("_id", -1))
-    return render_template('mantenimiento.html', registros=registros)
+    return render_template('mantenimiento.html', registros=registros, mensaje=mensaje)
 
 @main.route('/mantenimientos-mensuales')
 def mantenimientos_mensuales():
@@ -151,6 +147,13 @@ def mantenimientos_mensuales():
         registros_por_mes[mes].append(reg)
 
     return render_template('mantenimientos_mensuales.html', registros_por_mes=registros_por_mes)
+
+
+@main.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('main.home'))  # ← Esto lleva al index.html
+
 
 def actualizar_hoja_vida(equipo_id, fecha, descripcion):
     carpeta = os.path.join("static", "hojas_vida")
@@ -174,3 +177,4 @@ def actualizar_hoja_vida(equipo_id, fecha, descripcion):
     ws[f"C{fila}"] = descripcion
     ws[f"M{fila}"] = "SV Romero Romero Miguel Ángel"
     wb.save(archivo_equipo)
+
