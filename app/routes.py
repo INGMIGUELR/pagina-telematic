@@ -3,7 +3,6 @@ import os
 import io
 from flask import Blueprint, render_template, request, redirect, url_for, make_response, session
 from werkzeug.security import check_password_hash, generate_password_hash
-from app.db import coleccion_registros
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 from openpyxl import load_workbook
@@ -11,12 +10,15 @@ from openpyxl.cell import MergedCell
 from datetime import datetime
 from pymongo import MongoClient
 
+# Configuración del Blueprint
 main = Blueprint('main', __name__)
 
 # Conexión a MongoDB local
 client = MongoClient('mongodb://localhost:27017/')
 db = client['mantenimientos']
-coleccion_usuarios = db['usuarios']
+coleccion_registros = db['registros']  # Para módulo de mantenimiento
+coleccion_usuarios = db['usuarios']    # Para autenticación y roles
+
 
 # Almacena los archivos de hojas de vida que han sido actualizados
 hojas_actualizadas = set()
@@ -35,12 +37,14 @@ def login():
 
         if user and check_password_hash(user['password'], password):
             session['usuario'] = usuario
+            session['rol'] = user.get('rol', 'usuario')  # Por defecto 'usuario' si no existe
             return redirect(url_for('main.dashboard'))
         else:
             mensaje = "❌ Usuario o contraseña incorrectos."
             return render_template('login.html', mensaje=mensaje)
 
     return render_template('login.html')
+
 
 @main.route('/register', methods=['GET', 'POST'])
 def register():
@@ -80,9 +84,10 @@ def forgot_password():
 
 @main.route('/dashboard')
 def dashboard():
-    if 'usuario' in session:
-        return render_template('dashboard.html', usuario=session['usuario'])
-    return redirect(url_for('main.login'))
+    if 'usuario' not in session:
+        return redirect('/login')
+
+    return render_template('dashboard.html', usuario=session['usuario'])
 
 @main.route('/alertas')
 def alertas():

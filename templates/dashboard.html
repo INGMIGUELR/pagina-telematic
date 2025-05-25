@@ -104,40 +104,40 @@
     </div>
 
     <div class="content">
-        <h1>Bienvenido al Panel Principal</h1>
-        
+       <h1>Bienvenido al Panel Principal</h1>
+
 {% if usuario %}
     <p style="font-weight: bold; font-size: 18px;">Usuario: {{ usuario }}</p>
 {% endif %}
 
-        <p>módulos y opciones del sistema.</p>
+<p>Módulos y opciones del sistema.</p>
 
-        <div class="cards-container">
-            <div class="card">
-                <h3>Mantenimiento</h3>
-                <p>Registrar y gestionar el mantenimiento de equipos.</p>
-                <a href="/mantenimiento">Entrar</a>
-            </div>
+<div class="cards-container">
 
-            <div class="card">
-                <h3>Usuarios</h3>
-                <p>Administrar usuarios autorizados del sistema.</p>
-                <a href="#">Entrar</a>
-            </div>
-
-            <div class="card">
-                <h3>Reportes</h3>
-                <p>Ver reportes e historial de soporte técnico.</p>
-                <a href="#">Entrar</a>
-            </div>
-
-            <div class="card">
-                <h3>Alertas</h3>
-                <p>Ver próximos mantenimientos y notificaciones de fallos.</p>
-                <a href="/alertas">Entrar</a>
-            </div>
-        </div>
+    {% if session['rol'] == 'admin' %}
+    <div class="card">
+        <h3>Mantenimiento</h3>
+        <p>Registrar y gestionar el mantenimiento de equipos.</p>
+        <a href="/mantenimiento">Entrar</a>
     </div>
-</body>
-</html>
 
+    <div class="card">
+        <h3>Usuarios</h3>
+        <p>Administrar usuarios autorizados del sistema.</p>
+        <a href="#">Entrar</a>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <h3>Reportes</h3>
+        <p>Ver reportes e historial de soporte técnico.</p>
+        <a href="#">Entrar</a>
+    </div>
+
+    <div class="card">
+        <h3>Alertas</h3>
+        <p>Ver próximos mantenimientos y notificaciones de fallos.</p>
+        <a href="/alertas">Entrar</a>
+    </div>
+
+</div>
