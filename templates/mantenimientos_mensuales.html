@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Seguimiento plan Mantenimiento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        background-image: url("{{ url_for('static', filename='mantenimiento_bg.png') }}");
+        background-size: cover;
+        background-position: center;
+        color: white;
+        margin: 0;
+        padding: 20px;
+    }
+
+
+        .contenedor-meses {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .mes-card {
+            background-color: rgba(0, 0, 0, 0.75);
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        }
+
+        .mes-card h2 {
+            margin-top: 0;
+            font-size: 1.4em;
+            border-bottom: 1px solid white;
+            padding-bottom: 5px;
+            text-align: center;
+        }
+
+        .mes-card ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .mes-card li {
+            margin-bottom: 10px;
+            font-size: 0.95em;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 6px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align:center;">Seguimiento plan de Mantenimiento</h1>
+    <div class="contenedor-meses">
+        {% for mes, registros in registros_por_mes.items() %}
+        <div class="mes-card">
+            <h2>{{ mes }}</h2>
+            <ul>
+                {% for reg in registros %}
+                <li>
+                    <strong>{{ reg.equipo }}</strong><br>
+                    📅 {{ reg.fecha }}<br>
+                    🛠️ {{ reg.descripcion }}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
+

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro hojas de vida computo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="mantenimiento">
+    <div class="contenido fondo-oscuro">
+        <h1 style="text-align:center;">Registro hojas de vida computo</h1>
+
+        <form method="POST" style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
+            <input type="text" name="equipo" placeholder="ID del equipo" required style="width: 80%; padding: 10px;">
+            <input type="date" name="fecha" required style="width: 80%; padding: 10px;">
+            <textarea name="descripcion" placeholder="Descripción del mantenimiento" required style="width: 80%; padding: 10px;"></textarea>
+            <button type="submit" style="width: 100px;">Guardar</button>
+        </form>
+        <br>
+        <a href="{{ url_for('main.plan_general') }}">
+    <button style="width: 250px; margin: 10px;">📋 Ver Plan General</button>
+</a>
+    <a href="{{ url_for('main.hojas_de_vida') }}">
+        <button style="width: 250px;">Hoja de Vida</button>
+    </a>
+    
+    <a href="{{ url_for('main.mantenimientos_mensuales') }}">
+        <button style="width: 350px;">soporte computo realizado diario</button>
+    </a>
+</div>
+</body>
+</html>

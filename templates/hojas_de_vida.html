@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Hojas de Vida Actualizadas</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="hoja-vida-fondo">
+    <div class="hojas-container">
+        <h1>Hojas de Vida Actualizadas</h1>
+        <div class="grid">
+            {% for archivo in archivos %}
+                <a href="{{ url_for('static', filename='hojas_vida/' ~ archivo) }}" target="_blank">
+                    {{ archivo }}
+                </a>
+            {% endfor %}
+        </div>
+        <form action="{{ url_for('main.limpiar_historial') }}" method="post" style="text-align: center; margin-top: 50px;">
+    <button type="submit" style="
+        background-color: #362424;
+        color: #00ccff;                 
+        padding: 12px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;">
+        🧹 Limpiar Historial
+    </button>
+</form>
+    </div>
+</body>
+</html>
+

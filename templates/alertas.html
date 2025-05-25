@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Alertas del Sistema</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-color: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 40px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .alerta {
+            background-color: #ff4444;
+            border-left: 6px solid #ff0000;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            border-radius: 6px;
+            box-shadow: 0 2px 8px rgba(255,0,0,0.3);
+        }
+
+        .alerta h3 {
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        .alerta p {
+            margin: 5px 0 0 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Alertas de Mantenimiento</h1>
+
+    <div class="alerta">
+        <h3>Equipo #C04 – Crítico</h3>
+        <p>No ha recibido mantenimiento en 45 días.</p>
+    </div>
+
+    <div class="alerta">
+        <h3>Equipo #A21 – Pendiente</h3>
+        <p>Próximo mantenimiento en 3 días.</p>
+    </div>
+
+    <div class="alerta">
+        <h3>Equipo #B19 – Falla reportada</h3>
+        <p>No enciende correctamente. Requiere diagnóstico inmediato.</p>
+    </div>
+</body>
+</html>
