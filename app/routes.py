@@ -9,7 +9,15 @@ from openpyxl import load_workbook
 from openpyxl.cell import MergedCell
 from datetime import datetime
 
+from pymongo import MongoClient
+from werkzeug.security import generate_password_hash
+
 main = Blueprint('main', __name__)
+
+# Conexión a MongoDB local
+client = MongoClient('mongodb://localhost:27017/')
+db = client['mantenimientos']
+coleccion_usuarios = db['usuarios']
 
 # Almacena los archivos de hojas de vida que han sido actualizados
 hojas_actualizadas = set()
@@ -22,8 +30,39 @@ def home():
 def login():
     return render_template('login.html')
 
-@main.route('/register')
+@main.route('/register', methods=['GET', 'POST'])
 def register():
+    if request.method == 'POST':
+        usuario = request.form['usuario']
+        email = request.form['email']
+        password = request.form['password']
+
+        # Validar si ya existe el usuario
+        if coleccion_usuarios.find_one({"usuario": usuario}):
+            mensaje = "❌ El nombre de usuario ya está registrado."
+            return render_template('register.html', mensaje=mensaje)
+
+        # Validar si ya existe el correo
+        if coleccion_usuarios.find_one({"email": email}):
+            mensaje = "❌ El correo ya está registrado."
+            return render_template('register.html', mensaje=mensaje)
+
+        # Encriptar contraseña
+        password_hash = generate_password_hash(password)
+
+        nuevo_usuario = {
+            "usuario": usuario,
+            "email": email,
+            "password": password_hash,
+            "rol": "usuario",
+            "activo": True,
+            "creado": datetime.now()
+        }
+
+        coleccion_usuarios.insert_one(nuevo_usuario)
+        mensaje = "Usuario registrado exitosamente. Ahora puede iniciar sesión."
+        return render_template('register.html', mensaje=mensaje)
+
     return render_template('register.html')
 
 @main.route('/forgot-password')
@@ -38,10 +77,9 @@ def dashboard():
 def alertas():
     return render_template('alertas.html')
 
-
 @main.route('/hojas-de-vida')
 def hojas_de_vida():
-    archivos = sorted(hojas_actualizadas)  # Orden ascendente alfabético
+    archivos = sorted(hojas_actualizadas)
     return render_template('hojas_de_vida.html', archivos=archivos)
 
 @main.route('/limpiar-historial', methods=['POST'])
@@ -53,7 +91,6 @@ def limpiar_historial():
 @main.route('/plan-general')
 def plan_general():
     return render_template('plan_general.html')
-
 
 @main.route('/mantenimiento', methods=['GET', 'POST'])
 def mantenimiento():
@@ -70,8 +107,6 @@ def mantenimiento():
 
         coleccion_registros.insert_one(nuevo_registro)
         actualizar_hoja_vida(equipo, fecha, descripcion)
-
-        # Guardamos el archivo actualizado en el conjunto
         hojas_actualizadas.add(f"{equipo}.xlsx")
 
         return redirect(url_for('main.mantenimiento'))
@@ -83,8 +118,6 @@ def mantenimiento():
 def mantenimientos_mensuales():
     registros = list(coleccion_registros.find())
     registros_por_mes = {}
-
-    
 
     for reg in registros:
         try:
@@ -99,8 +132,6 @@ def mantenimientos_mensuales():
         registros_por_mes[mes].append(reg)
 
     return render_template('mantenimientos_mensuales.html', registros_por_mes=registros_por_mes)
-    return render_template("plan_general.html", datos_plan=datos, totales_mes=totales, total_general=total)
-
 
 def actualizar_hoja_vida(equipo_id, fecha, descripcion):
     carpeta = os.path.join("static", "hojas_vida")
@@ -123,7 +154,4 @@ def actualizar_hoja_vida(equipo_id, fecha, descripcion):
     ws[f"A{fila}"] = fecha
     ws[f"C{fila}"] = descripcion
     ws[f"M{fila}"] = "SV Romero Romero Miguel Ángel"
-
-
     wb.save(archivo_equipo)
-
