@@ -2,6 +2,8 @@ import glob
 import os
 import io
 from flask import Blueprint, render_template, request, redirect, url_for, make_response
+from flask import session
+from werkzeug.security import check_password_hash
 from app.db import coleccion_registros
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
@@ -26,9 +28,23 @@ hojas_actualizadas = set()
 def home():
     return render_template('index.html')
 
-@main.route('/login')
+@main.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        usuario = request.form['usuario']
+        password = request.form['password']
+
+        user = coleccion_usuarios.find_one({"usuario": usuario})
+
+        if user and check_password_hash(user['password'], password):
+            session['usuario'] = usuario
+            return redirect(url_for('main.dashboard'))
+        else:
+            mensaje = "❌ Usuario o contraseña incorrectos."
+            return render_template('login.html', mensaje=mensaje)
+
     return render_template('login.html')
+
 
 @main.route('/register', methods=['GET', 'POST'])
 def register():
@@ -71,7 +87,10 @@ def forgot_password():
 
 @main.route('/dashboard')
 def dashboard():
-    return render_template('dashboard.html')
+    if 'usuario' in session:
+        return render_template('dashboard.html', usuario=session['usuario'])
+    return redirect(url_for('main.login'))
+
 
 @main.route('/alertas')
 def alertas():
