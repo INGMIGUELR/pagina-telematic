@@ -18,6 +18,8 @@ client = MongoClient('mongodb://localhost:27017/')
 db = client['mantenimientos']
 coleccion_registros = db['registros']  # Para módulo de mantenimiento
 coleccion_usuarios = db['usuarios']    # Para autenticación y roles
+coleccion_alertas = db['alertas']  # ✅ Para registrar alertas de fallos
+
 
 
 # Almacena los archivos de hojas de vida que han sido actualizados
@@ -89,9 +91,24 @@ def dashboard():
 
     return render_template('dashboard.html', usuario=session['usuario'])
 
-@main.route('/alertas')
+@main.route('/alertas', methods=['GET', 'POST'])
 def alertas():
+    if request.method == 'POST':
+        alerta = {
+            "usuario": session.get('usuario'),
+            "fecha": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            "serie_computador": request.form['serie'],
+            "tipo_ubicacion": request.form['tipo_ubicacion'],
+            "ubicacion": request.form['ubicacion'],
+            "problema": request.form['problema']
+        }
+
+        coleccion_alertas.insert_one(alerta)
+        mensaje = "✅ Alerta registrada con éxito."
+        return render_template('alertas.html', mensaje=mensaje)
+
     return render_template('alertas.html')
+
 
 @main.route('/hojas-de-vida')
 def hojas_de_vida():
