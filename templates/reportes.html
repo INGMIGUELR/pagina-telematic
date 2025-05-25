@@ -36,6 +36,17 @@
         tr:hover {
             background-color: #2a2a2a;
         }
+
+        .estado-pendiente {
+    background-color: rgba(255, 255, 100, 0.2);
+    border-left: 4px solid yellow;
+}
+
+.estado-solucionado {
+    background-color: rgba(100, 255, 100, 0.2);
+    border-left: 4px solid limegreen;
+}
+
     </style>
 </head>
 <body>
@@ -56,19 +67,30 @@
         </tr>
     </thead>
     <tbody>
-        {% for alerta in alertas %}
-        <tr>
-            <td>{{ alerta.fecha }}</td>
-            <td>{{ alerta.serie_computador }}</td>
-            <td>{{ alerta.ubicacion }}</td>
-            <td>{{ alerta.tipo_ubicacion }}</td>
-            <td>{{ alerta.problema }}</td>
-            <td>{{ alerta.estado if alerta.estado else 'Pendiente' }}</td>
-            <td>{{ alerta.hora_atencion if alerta.hora_atencion else 'Sin asignar' }}</td>
-            <td>{{ alerta.comentario_admin if alerta.comentario_admin else '---' }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
+    {% for alerta in alertas %}
+    <tr class="
+        {% if alerta.estado == 'Solucionado' %}estado-solucionado
+        {% elif alerta.estado == 'Pendiente' and alerta.comentario_admin %}estado-pendiente
+        {% endif %}
+    ">
+        <td>{{ alerta.fecha }}</td>
+        <td>{{ alerta.serie_computador }}</td>
+        <td>{{ alerta.ubicacion }}</td>
+        <td>{{ alerta.tipo_ubicacion }}</td>
+        <td>{{ alerta.problema }}</td>
+        <td>{{ alerta.estado if alerta.estado else 'Pendiente' }}</td>
+        <td>{{ alerta.hora_atencion if alerta.hora_atencion else 'Sin asignar' }}</td>
+        <td>
+            {% if alerta.comentario_admin %}
+                <strong>{{ alerta.comentario_admin }}</strong>
+            {% else %}
+                ---
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+
 </table>
 
     {% else %}

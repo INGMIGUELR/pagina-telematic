@@ -9,6 +9,10 @@ from openpyxl import load_workbook
 from openpyxl.cell import MergedCell
 from datetime import datetime
 from pymongo import MongoClient
+from bson.objectid import ObjectId
+from datetime import datetime
+
+
 
 # Configuración del Blueprint
 main = Blueprint('main', __name__)
@@ -180,14 +184,63 @@ def reportes():
 
     return render_template('reportes.html', alertas=alertas_usuario)
 
-@main.route('/gestionar-alertas', methods=['GET'])
+@main.route('/gestionar-alertas')
 def gestionar_alertas():
     if 'usuario' not in session or session.get('rol') != 'admin':
         return redirect(url_for('main.login'))
 
-    alertas = list(db.alertas.find().sort("fecha", -1))
-    return render_template('gestionar_alertas.html', alertas=alertas)
+    estado = request.args.get('estado')
+    filtro = {}
 
+    if estado and estado != 'Todas':
+        filtro['estado'] = estado
+
+    alertas = list(db.alertas.find(filtro).sort("fecha", -1))
+    return render_template('gestionar_alertas.html', alertas=alertas, estado_actual=estado or 'Todas')
+
+
+@main.route('/actualizar-alerta/<id>', methods=['POST'])
+def actualizar_alerta(id):
+    if 'usuario' not in session or session.get('rol') != 'admin':
+        return redirect(url_for('main.login'))
+
+    estado = request.form.get('estado')
+    hora_atencion = request.form.get('hora_atencion')
+    comentario_admin = request.form.get('comentario_admin')
+
+    db.alertas.update_one(
+        {'_id': ObjectId(id)},
+        {'$set': {
+            'estado': estado,
+            'hora_atencion': hora_atencion,
+            'comentario_admin': comentario_admin
+        }}
+    )
+
+    return redirect(url_for('main.gestionar_alertas'))
+
+@main.route('/solucionar-todo', methods=['POST'])
+def solucionar_todo():
+    if 'usuario' not in session or session.get('rol') != 'admin':
+        return redirect(url_for('main.login'))
+
+    estado_filtro = request.form.get('estado_actual')
+
+    filtro = {}
+    if estado_filtro and estado_filtro != 'Todas':
+        filtro['estado'] = estado_filtro
+    else:
+        filtro['estado'] = {'$in': ['Pendiente', None]}
+
+    db.alertas.update_many(filtro, {
+        "$set": {
+            "estado": "Solucionado",
+            "hora_atencion": datetime.now().strftime('%H:%M'),
+            "comentario_admin": "Solucionado por administrador"
+        }
+    })
+
+    return redirect(url_for('main.gestionar_alertas', estado=estado_filtro))
 
 
 @main.route('/logout')

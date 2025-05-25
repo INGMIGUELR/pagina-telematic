@@ -48,6 +48,32 @@
 <body>
     <h1>Gestión de Alertas</h1>
 
+    <form method="GET" action="{{ url_for('main.gestionar_alertas') }}" style="margin-bottom: 20px; text-align: center;">
+    <label for="estado" style="font-weight: bold;">Filtrar por estado:</label>
+    <select name="estado" onchange="this.form.submit()" style="padding: 5px; font-size: 14px;">
+        <option value="Todas" {% if estado_actual == 'Todas' %}selected{% endif %}>Todas</option>
+        <option value="Pendiente" {% if estado_actual == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+        <option value="En proceso" {% if estado_actual == 'En proceso' %}selected{% endif %}>En proceso</option>
+        <option value="Solucionado" {% if estado_actual == 'Solucionado' %}selected{% endif %}>Solucionado</option>
+    </select>
+</form>
+ <form method="POST" action="{{ url_for('main.solucionar_todo') }}" style="text-align: center; margin-bottom: 20px;">
+    <input type="hidden" name="estado_actual" value="{{ estado_actual }}">
+    <button type="submit"
+        onclick="return confirm('⚠️ ¿Estás seguro de marcar todas las alertas filtradas como solucionadas?')"
+        style="padding: 5px 10px; background-color: rgb(71, 92, 71); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">
+        ✅ Marcar todas como solucionadas
+    </button>
+    <div style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
+    <a href="{{ url_for('main.dashboard') }}"
+       style="padding: 8px 16px; background-color: #333; color: white; border-radius: 5px; text-decoration: none; font-weight: bold;">
+        ⬅️ Volver
+    </a>
+</div>
+
+
+</form>
+
     <table>
         <thead>
             <tr>
@@ -63,20 +89,32 @@
             </tr>
         </thead>
         <tbody>
-            {% for alerta in alertas %}
-            <tr class="{% if alerta.estado == 'Solucionado' %}solucionado{% elif alerta.estado == 'En proceso' %}en_proceso{% else %}pendiente{% endif %}">
-                <td>{{ alerta.fecha }}</td>
-                <td>{{ alerta.usuario }}</td>
-                <td>{{ alerta.serie_computador }}</td>
-                <td>{{ alerta.ubicacion }}</td>
-                <td>{{ alerta.tipo_ubicacion }}</td>
-                <td>{{ alerta.problema }}</td>
-                <td>{{ alerta.estado if alerta.estado else 'Pendiente' }}</td>
-                <td>{{ alerta.hora_atencion if alerta.hora_atencion else '' }}</td>
-                <td>{{ alerta.comentario_admin if alerta.comentario_admin else '' }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
+    {% for alerta in alertas %}
+    <tr class="{% if alerta.estado == 'Solucionado' %}solucionado{% elif alerta.estado == 'En proceso' %}en_proceso{% else %}pendiente{% endif %}">
+        <form action="{{ url_for('main.actualizar_alerta', id=alerta._id) }}" method="POST">
+            <td>{{ alerta.fecha }}</td>
+            <td>{{ alerta.usuario }}</td>
+            <td>{{ alerta.serie_computador }}</td>
+            <td>{{ alerta.ubicacion }}</td>
+            <td>{{ alerta.tipo_ubicacion }}</td>
+            <td>{{ alerta.problema }}</td>
+            <td>
+                <select name="estado" required>
+                    <option value="Pendiente" {% if alerta.estado == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+                    <option value="En proceso" {% if alerta.estado == 'En proceso' %}selected{% endif %}>En proceso</option>
+                    <option value="Solucionado" {% if alerta.estado == 'Solucionado' %}selected{% endif %}>Solucionado</option>
+                </select>
+            </td>
+            <td><input type="time" name="hora_atencion" value="{{ alerta.hora_atencion }}"></td>
+            <td>
+                <input type="text" name="comentario_admin" value="{{ alerta.comentario_admin }}" style="width: 100%;">
+                <button type="submit">Guardar</button>
+            </td>
+        </form>
+    </tr>
+    {% endfor %}
+</tbody>
+
     </table>
 </body>
 </html>
