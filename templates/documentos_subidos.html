@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>📁 Documentos Subidos por Usuarios</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+    body {
+        background-image: url('/static/fondo2.png');
+        background-size: cover;
+        background-position: center;
+        font-family: Arial, sans-serif;
+        color: white;
+        text-align: center;
+    }
+
+    table {
+        width: 70%; /* Reducido el ancho */
+        margin: 30px auto;
+        border-collapse: collapse;
+        font-size: 14px;
+        background-color: rgba(0, 0, 0, 0.85);
+    }
+
+    th, td {
+        padding: 8px 12px;
+        border: 1px solid #444;
+    }
+
+    th {
+        background-color: #222;
+    }
+
+    tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.04);
+    }
+
+    a.link-archivo {
+        color: white;
+        text-decoration: underline;
+        font-weight: bold;
+    }
+
+    .boton-accion {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        cursor: pointer;
+        color: white;
+        background-color: #dc3545;
+    }
+
+    .descargar-btn {
+        background-color: #007bff;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        margin: 20px auto;
+        display: inline-block;
+        font-size: 14px;
+    }
+
+    .volver-btn {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+</style>
+
+</head>
+<body>
+
+    <a href="{{ url_for('main.dashboard') }}" class="volver-btn">🔙 Volver</a>
+
+    <h1>📁 Soporte tecnico subido por usuario</h1>
+
+    <a href="{{ url_for('main.descargar_todos_los_soportes') }}" class="descargar-btn">
+        📥 Descargar Todos los Soportes
+    </a>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Nombre del Archivo</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for archivo in archivos %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('static', filename='uploads/' ~ archivo) }}"
+                     target="_blank"
+                     class="link-archivo">
+                    {{ archivo }}
+                    </a>
+
+                </td>
+                <td>
+                    <form method="POST" action="{{ url_for('main.eliminar_soporte', nombre=archivo) }}">
+                        <button type="submit" class="boton-accion">🗑 Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+
+</body>
+</html>

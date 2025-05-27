@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial de Soportes Diarios</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-image: url('/static/fondo2.png');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 95%;
+            margin: 30px auto;
+            border-collapse: collapse;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #555;
+        }
+        th {
+            background-color: #222;
+        }
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        input[type="date"] {
+            padding: 8px;
+            margin: 10px;
+            border-radius: 5px;
+        }
+        .volver-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<a href="{{ url_for('main.dashboard') }}" class="volver-btn">🔙 Volver</a>
+
+<h1>🗂 Historial de Soportes Solucionados</h1>
+
+<form method="get" action="{{ url_for('main.historial_soportes') }}">
+    <label for="fecha">📅 Filtrar por fecha:</label>
+    <input type="date" name="fecha" value="{{ fecha }}">
+    <button type="submit">Filtrar</button>
+</form>
+
+<table>
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Usuario</th>
+            <th>Serie</th>
+            <th>Ubicación</th>
+            <th>Tipo</th>
+            <th>Problema</th>
+            <th>Hora Atención</th>
+            <th>Comentario</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for alerta in historial %}
+        <tr>
+            <td>{{ alerta.fecha }}</td>
+            <td>{{ alerta.usuario }}</td>
+            <td>{{ alerta.serie_computador }}</td>
+            <td>{{ alerta.ubicacion }}</td>
+            <td>{{ alerta.tipo_ubicacion }}</td>
+            <td>{{ alerta.problema }}</td>
+            <td>{{ alerta.hora_atencion }}</td>
+            <td>{{ alerta.comentario_admin }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if historial|length == 0 %}
+    <p style="color: red; font-weight: bold;">❌ No hay alertas solucionadas para la fecha indicada.</p>
+{% endif %}
+
+</body>
+</html>

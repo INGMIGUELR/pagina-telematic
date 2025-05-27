@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Mis Reportes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #444;
+            text-align: left;
+        }
+        th {
+            background-color: #333;
+        }
+        .estado-pendiente {
+            background-color: rgba(255, 80, 80, 0.2);
+        }
+        .estado-en-proceso {
+            background-color: rgba(255, 255, 0, 0.2);
+        }
+        .estado-solucionado {
+            background-color: rgba(100, 255, 100, 0.2);
+        }
+
+        .boton-reportes {
+    padding: 10px 20px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    min-width: 200px;
+    text-align: center;
+}
+.boton-azul {
+    background-color: #007bff;
+}
+.boton-rojo {
+    background-color: #dc3545;
+}
+    </style>
+</head>
+<body>
+
+    <body>
+    <h1 style="text-align: center;">Mis Reportes</h1>
+
+    <!-- Botones superiores -->
+    <div style="margin: 120px;">
+    <form method="GET" style="display: inline;">
+        <button type="submit" class="boton-reportes boton-azul">
+            🔄 Actualizar Reportes
+        </button>
+    </form>
+
+    <form action="{{ url_for('main.limpiar_reportes') }}" method="POST" style="display: inline;">
+        <button type="submit" class="boton-reportes boton-rojo">
+            🗑 Limpiar Mis Reportes
+        </button>
+    </form>
+        <a href="{{ url_for('main.dashboard') }}" style="position: absolute; top: 20px; right: 30px; background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3); color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+            🔙 Volver
+        </a>
+    </div>
+
+    {% if alertas %}
+    <table id="tabla-reportes">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Serie</th>
+                <th>Ubicación</th>
+                <th>Tipo</th>
+                <th>Problema</th>
+                <th>Estado</th>
+                <th>Hora Atención</th>
+                <th>Comentario</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for alerta in alertas %}
+        <tr class="
+            {% if alerta.estado == 'Solucionado' %}estado-solucionado
+            {% elif alerta.estado == 'En proceso' %}estado-en-proceso
+            {% elif alerta.estado == 'Pendiente' %}estado-pendiente
+            {% endif %}
+        ">
+            <td>{{ alerta.fecha }}</td>
+            <td>{{ alerta.serie_computador }}</td>
+            <td>{{ alerta.ubicacion }}</td>
+            <td>{{ alerta.tipo_ubicacion }}</td>
+            <td>{{ alerta.problema }}</td>
+            <td>{{ alerta.estado if alerta.estado else 'Pendiente' }}</td>
+            <td>{{ alerta.hora_atencion if alerta.hora_atencion else 'Sin asignar' }}</td>
+            <td>
+                {% if alerta.comentario_admin %}
+                    <strong>{{ alerta.comentario_admin }}</strong>
+                {% else %}
+                    ---
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Botón de descarga (movido abajo) -->
+    <div style="text-align: center; margin: 25px 0;">
+        <a href="{{ url_for('static', filename='formatos/soporte_tecnico.docx') }}"
+        download
+        style="padding: 10px 20px; background-color: #008CBA; color: white; border-radius: 6px; text-decoration: none; font-weight: bold;">
+            📄 Descargar Formato de Soporte Técnico
+        </a>
+    </div>
+
+    <!-- Subida de soporte -->
+    <form action="/subir-soporte" method="POST" enctype="multipart/form-data" style="text-align: center;">
+        <label for="equipo">Serie del equipo:</label>
+        <input type="text" name="equipo" placeholder="Serie del equipo" required>
+        <input type="file" name="archivo" required>
+        <button type="submit">📤 Subir Documento</button>
+    </form>
+
+    {% else %}
+        <p style="text-align: center;">No tienes reportes registrados.</p>
+    {% endif %}
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for msg in messages %}
+          <p id="mensaje-exito" style="color: rgb(57, 129, 57); font-weight: bold; text-align: center;">{{ msg }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <script>
+        setTimeout(function () {
+            const mensaje = document.getElementById('mensaje-exito');
+            if (mensaje) {
+                mensaje.style.display = 'none';
+            }
+        }, 2000);
+    </script>
+</body>
+</html>
+

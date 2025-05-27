@@ -6,8 +6,37 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body class="mantenimiento">
+    <a href="{{ url_for('main.dashboard') }}" style="
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.3s;
+">
+    🔙 Volver
+</a>
+
     <div class="contenido fondo-oscuro">
         <h1 style="text-align:center;">Registro hojas de vida computo</h1>
+       {% if mensaje == 'ok' %}
+    <p id="mensaje-exito" style="
+        color: rgb(118, 196, 118);
+        text-align: center;
+        font-weight: bold;
+        margin-top: 10px;
+        opacity: 1;
+        transition: opacity 1s ease-in-out;
+    ">
+        ✅ Mantenimiento registrado correctamente.
+    </p>
+{% endif %}
+
 
         <form method="POST" style="display: flex; flex-direction: column; gap: 20px; align-items: center;">
             <input type="text" name="equipo" placeholder="ID del equipo" required style="width: 80%; padding: 10px;">
@@ -27,5 +56,33 @@
         <button style="width: 350px;">soporte computo realizado diario</button>
     </a>
 </div>
+<style>
+    #mensaje-exito {
+        opacity: 0;
+        transition: opacity 1s ease-in-out;
+    }
+
+    .fade-out {
+        opacity: 0;
+        transition: opacity 1s ease-out;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var mensaje = document.getElementById("mensaje-exito");
+        if (mensaje) {
+            setTimeout(function () {
+                mensaje.style.opacity = "0";
+
+                setTimeout(function () {
+                    mensaje.style.display = "none";
+                }, 1000); // Espera que termine la transición
+            }, 3000); // Muestra el mensaje 3 segundos
+        }
+    });
+</script>
+
 </body>
-</html>
+
+

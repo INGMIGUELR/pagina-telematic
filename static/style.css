@@ -11,7 +11,7 @@ html, body {
 
 /* Fondo que cubre la pantalla */
 body {
-    background-image: url('/static/fondo.jpg');
+    background-image: url('/static/fondo1.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -19,13 +19,13 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    padding-top: 80px;
+    padding-top: 30px;
     color: white;
     text-align: center;
 }
 
 body.mantenimiento {
-    background-image: url('../static/mantenimiento_bg.png');
+    background-image: url('../static/fondo2.png');
     background-size: cover;
     background-position: center;
     font-family: Arial, sans-serif;
@@ -130,5 +130,50 @@ button:hover {
 
 .grid a:hover {
     background-color: rgba(255, 255, 255, 0.25);
+}
+
+
+.eliminar-archivo {
+    background-color: #ff4d4d;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    margin-left: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.eliminar-archivo:hover {
+    background-color: #cc0000;
+}
+
+.documento {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 15px;
+}
+
+.nombre-archivo {
+    color: #00ccff;
+    font-weight: bold;
+    text-decoration: underline;
+    margin-right: 10px;
+}
+
+.boton-eliminar {
+    background-color: #e74c3c;
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.boton-eliminar:hover {
+    background-color: #c0392b;
 }
 

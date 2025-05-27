@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Usuarios</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background-image: url('/static/fondo2.png');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 80%;
+            margin: 80px auto;
+            border-collapse: collapse;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #444;
+            text-align: center;
+        }
+        th {
+            background-color: #222;
+        }
+        .volver-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('main.dashboard') }}" class="volver-btn">🔙 Volver</a>
+    <h1 style="text-align: center;">👥 Gestión de Usuarios</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for u in usuarios %}
+            <tr>
+                <td>{{ u.usuario }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.rol }}</td>
+                <td>{{ 'Activo' if u.activo else 'Inactivo' }}</td>
+                <td>
+                    <form action="{{ url_for('main.cambiar_estado_usuario') }}" method="POST" style="display:inline;">
+                        <input type="hidden" name="id" value="{{ u._id }}">
+                        <button type="submit">{{ 'Desactivar' if u.activo else 'Activar' }}</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

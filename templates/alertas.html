@@ -18,41 +18,68 @@
             margin-bottom: 40px;
         }
 
-        .alerta {
-            background-color: #ff4444;
-            border-left: 6px solid #ff0000;
-            margin-bottom: 20px;
-            padding: 15px 20px;
-            border-radius: 6px;
-            box-shadow: 0 2px 8px rgba(255,0,0,0.3);
+        .botones {
+            margin-top: 20px;
         }
 
-        .alerta h3 {
-            margin: 0;
-            font-size: 1.2em;
+        .boton-accion {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-right: 10px;
+            background-color: #f0f0f0;
+            color: black;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            text-decoration: none;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-align: center;
         }
 
-        .alerta p {
-            margin: 5px 0 0 0;
+        .boton-accion:hover {
+            background-color: #ccc;
         }
     </style>
 </head>
 <body>
-    <h1>Alertas de Mantenimiento</h1>
+    <h1>Registrar Alerta</h1>
 
-    <div class="alerta">
-        <h3>Equipo #C04 – Crítico</h3>
-        <p>No ha recibido mantenimiento en 45 días.</p>
-    </div>
+    <form action="/alertas" method="POST">
+        <label for="serie">Serie del Computador:</label><br>
+        <input type="text" name="serie" required><br><br>
 
-    <div class="alerta">
-        <h3>Equipo #A21 – Pendiente</h3>
-        <p>Próximo mantenimiento en 3 días.</p>
-    </div>
+        <label for="tipo_ubicacion">Tipo de Ubicación:</label><br>
+        <select name="tipo_ubicacion" required>
+            <option value="Hangar">Hangar</option>
+            <option value="Dependencia">Dependencia</option>
+        </select><br><br>
 
-    <div class="alerta">
-        <h3>Equipo #B19 – Falla reportada</h3>
-        <p>No enciende correctamente. Requiere diagnóstico inmediato.</p>
-    </div>
+        <label for="ubicacion">Nombre del Hangar o Dependencia:</label><br>
+        <input type="text" name="ubicacion" required><br><br>
+
+        <label for="problema">Problema presentado:</label><br>
+        <textarea name="problema" rows="4" cols="50" required></textarea><br><br>
+
+        <div class="botones">
+            <button type="submit" class="boton-accion">Enviar Alerta</button>
+            <a href="{{ url_for('main.dashboard') }}" class="boton-accion">Volver al Panel</a>
+        </div>
+    </form>
+
+    {% if mensaje %}
+      <p id="mensaje-exito" style="color: green; font-weight: bold;">{{ mensaje }}</p>
+    {% endif %}
+
+    <script>
+      // Espera 3 segundos y luego oculta el mensaje
+      setTimeout(function () {
+        const mensaje = document.getElementById('mensaje-exito');
+        if (mensaje) {
+          mensaje.style.display = 'none';
+        }
+      }, 3000);
+    </script>
 </body>
 </html>

@@ -2,11 +2,75 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Redirigiendo al Dashboard...</title>
-    <meta http-equiv="refresh" content="0; url=/dashboard">
+    <title>Iniciar sesión</title>
+    <style>
+        body {
+            background-image: url("{{ url_for('static', filename='fondo1.png') }}");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 75px;
+        }
+
+        form {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            width: 300px;
+        }
+
+        input {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #38bdf8;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0ea5e9;
+        }
+
+        .error {
+            color: red;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <p>Redirigiendo al panel principal...</p>
+    <h2>Iniciar sesión</h2>
+
+    <form method="POST" action="/login">
+        <label for="usuario">Usuario:</label>
+        <input type="text" id="usuario" name="usuario" required>
+
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" name="password" required>
+
+        <button type="submit">Entrar</button>
+    </form>
+
+    {% if mensaje %}
+        <p class="error">{{ mensaje }}</p>
+    {% endif %}
 </body>
 </html>
+
 
