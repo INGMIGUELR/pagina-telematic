@@ -22,8 +22,19 @@ body {
     padding-top: 30px;
     color: white;
     text-align: center;
+
 }
 
+.gif-flotante {
+  position: fixed;
+  top: 08px;               /* Distancia desde la parte superior */
+  left: 50%;               /* Centrado horizontal */
+  transform: translateX(-50%);
+  width: 140px;            /* Ajusta el tamaño según necesites */
+  height: auto;            /* Mantiene la proporción */
+  z-index: 10;
+
+    }
 body.mantenimiento {
     background-image: url('../static/fondo2.png');
     background-size: cover;
