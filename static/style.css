@@ -2,14 +2,12 @@
 html, body {
     margin: 0;
     padding: 0;
-    height: auto;
+    height: 100%;  /* Asegura que ocupe todo el alto */
     font-family: Arial, sans-serif;
-    overflow-y: auto;  /* Activa scroll vertical */
-    overflow-x: hidden;  /* Evita scroll lateral */
+    background-color: black; /* Por si hay espacios fuera del fondo */
+    overflow-x: hidden;
 }
 
-
-/* Fondo que cubre la pantalla */
 body {
     background-image: url('/static/fondo1.png');
     background-size: cover;
@@ -17,24 +15,31 @@ body {
     background-repeat: no-repeat;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding-top: 30px;
+    justify-content: center;   /* Centrado vertical */
+    align-items: center;       /* Centrado horizontal */
+    min-height: 100vh;         /* Garantiza que ocupe el 100% del viewport */
     color: white;
-    text-align: center;
-
 }
 
 .gif-flotante {
   position: fixed;
-  top: 08px;               /* Distancia desde la parte superior */
+  top: 20px;               /* Distancia desde la parte superior */
   left: 50%;               /* Centrado horizontal */
   transform: translateX(-50%);
   width: 140px;            /* Ajusta el tamaño según necesites */
   height: auto;            /* Mantiene la proporción */
   z-index: 10;
+  pointer-events: none;   /* Para que no interfiera al hacer clic en otras cosas */
+}
 
-    }
+.marca-agua {
+    margin-top: 20px;
+    width: 80px;             /* Puedes ajustar el tamaño */
+    opacity: 0.3;            /* Transparencia (0.0 a 1.0) */
+    pointer-events: none;    /* No interfiere al hacer clic */
+}
+
+
 body.mantenimiento {
     background-image: url('../static/fondo2.png');
     background-size: cover;
@@ -59,7 +64,8 @@ body.mantenimiento {
 
 .fondo-oscuro {
     background-color: rgba(0, 0, 0, 0.6);  /* Oscurece el fondo */
-    padding: 30px;
+    text-align: center; /* 👈 Centra el contenido interno */
+    padding: 50px;
     border-radius: 10px;
     max-width: 800px;
     margin: 50px auto;
@@ -115,6 +121,7 @@ button:hover {
     background-color: rgba(0, 0, 0, 0.7);
     padding: 30px;
     border-radius: 12px;
+    justify-content: center;
     max-width: 900px;
     margin: auto;
 }
