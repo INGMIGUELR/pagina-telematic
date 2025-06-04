@@ -33,8 +33,8 @@ body {
 }
 
 .marca-agua {
-    margin-top: 20px;
-    width: 80px;             /* Puedes ajustar el tamaño */
+    margin-top: 80px;
+    width: 20px;             /* Puedes ajustar el tamaño */
     opacity: 0.3;            /* Transparencia (0.0 a 1.0) */
     pointer-events: none;    /* No interfiere al hacer clic */
 }
@@ -198,3 +198,15 @@ button:hover {
     background-color: #c0392b;
 }
 
+.espectron-titulo {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 16px;
+    color: white;
+    font-weight: bold;
+    background-color: rgba(0, 0, 0, 0.4); /* fondo semitransparente */
+    padding: 5px 12px;
+    border-radius: 8px;
+    z-index: 1000;
+}
